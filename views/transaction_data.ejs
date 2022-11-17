@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link href="https://cdn.datatables.net/1.12.0/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.datatables.net/1.12.0/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.12.0/js/dataTables.bootstrap5.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
+        integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+        integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>
+
+    <title></title>
+    <style>
+        #map {
+            height: 300px;
+            width: 1300px;
+            text-align: center;
+            margin: 0 0 50px 110px;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .bg-light {
+            background-color: #da5538 !important;
+        }
+
+        .form-control {
+            width: 50%;
+            float: right;
+        }
+    </style>
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">UNIQUE BANK</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" onclick="bankDetails()">BANK DETAILS </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="customerDetails()">CUSTOMER DETAILS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="transactionDetails()">TRANSACTION DETAILS</a>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+
+
+    <div class="container">
+        <h1 class="mt-4 mb-4 text-center text-primary"><b>
+                <%= title %>
+            </b></h1>
+
+
+
+        <span id="message"></span>
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-lg-4 col-sm-6 text-success h4"> Transaction Details
+                    </div>
+
+
+                    <div class="col col-sm-6">
+                        <form class="form-inline my-2 my-lg-0">
+                            <input class="form-control mr-sm-2" type="search" id="myInput" onkeyup="search_f()"
+                                placeholder="Search" aria-label="Search">
+                         
+                        </form>
+                    </div>
+                    <div class="col col-sm-2">
+                        <button type="button" id="add_data"  class="btn btn-success btn-sm float-end">Add</button>
+
+                    </div>
+                   
+
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered" id="transaction_data">
+                        <thead>
+                            <tr>
+
+                                <th>Bank_name</th>
+                                <th>Customer_id</th>
+                                <th>Name</th>
+                                <th>Account_number</th>
+                                <th>Contact_number</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Transaction_type</th>
+                                <th>Location</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+ <div class="modal" tabindex="-1" id="action_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" id="sample_form">
+                <div class="modal-header" id="dynamic_modal_title">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Bank_name</label>
+                        <input type="text" name="Bank_name" id="Bank_name" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Customer_id</label>
+                        <input type="number" name="Customer_id" id="Customer_id" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" name="Name" id="Name" class="form-control" />
+
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Account_number</label>
+                        <input type="number" name="Account_number" id="Account_number" class="form-control" />
+                    </div>
+                   
+                    <div class="mb-3">
+                        <label class="form-label">Contact_number</label>
+                        <input type="number" name="Contact_number" id="Contact_number" class="form-control" />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Amount</label>
+                        <input type="number" name="Amount" id="Amount" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Date</label>
+                        <input type="date" name="Date" id="Date" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Transaction_type</label>
+                        <input type="nummber" name="Transaction_type" id="Transaction_type" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Location</label>
+                        <input type="nummber" name="Location" id="Location" class="form-control" />
+                    </div>
+                   
+                </div>
+                 <div class="modal-footer">
+                    <input type="hidden" name="id" id="id" />
+                    <input type="hidden" name="details" id="details" value="Add" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="action_button">Add</button>
+                </div> 
+            </form>
+        </div>
+    </div>
+</div> 
+<h1 class="mt-4 mb-4 text-center text-primary"><b>Transactions - Map View</b></h1>
+
+
+<div id="map"></div>
+<script>
+    var map = L.map('map').setView([13.0827, 80.2707], 4);
+
+    L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=etVqSaZAz1U98LvVh3Fj').addTo(map);
+
+</script>
+
+<script>
+
+    var marker = L.marker([13.0827, 80.2707]).addTo(map);
+    L.marker([13.0827, 80.2707]).addTo(map)
+        .bindPopup('Kumar <br>Amount:30000  <br> Date:09-11-2022.')
+        .openPopup();
+
+
+    var marker = L.marker([17.3850, 78.4867]).addTo(map);
+    L.marker([17.3850, 78.4867]).addTo(map)
+        .bindPopup('Akash <br>Amount:800 <br> Date:08-11-2022.')
+        .openPopup();
+
+
+    var marker = L.marker([23.2599, 77.4126]).addTo(map);
+    L.marker([23.2599, 77.4126]).addTo(map)
+        .bindPopup('Siva <br>Amount:5000 <br> Date:05-11-2022.')
+        .openPopup();
+
+
+    var marker = L.marker([31.1048, 77.1734]).addTo(map);
+    L.marker([31.1048, 77.1734]).addTo(map)
+        .bindPopup('JayaPrakash <br>Amount:200 <br> Date:06-11-2022.')
+        .openPopup();
+
+
+    var marker = L.marker([8.5241, 76.9366]).addTo(map);
+    L.marker([8.5241, 76.9366]).addTo(map)
+        .bindPopup('Abinaya <br>Amount:2000 <br> Date:02-11-2022.')
+        .openPopup();
+
+
+    var marker = L.marker([12.9716, 77.5946]).addTo(map);
+    L.marker([12.9716, 77.5946]).addTo(map)
+        .bindPopup('Ajith <br>Amount:10000 <br> Date:10-11-2022.')
+        .openPopup();
+
+</script>
+
+
+<script>
+    //Navigation function
+    function transactionDetails() {
+        window.open('/transaction_data', '_self')
+    }
+
+    function bankDetails() {
+        window.open('/bank_details', '_self')
+    }
+
+    function customerDetails() {
+        window.open('/customer_details', '_self')
+    }
+    //search function
+    function search_f() {
+        var input, filter, table, tr, td, i;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("transaction_data");
+        var rows = table.getElementsByTagName("tr");
+        for (i = 0; i < rows.length; i++) {
+            var cells = rows[i].getElementsByTagName("td");
+            var j;
+            var rowContainsFilter = false;
+            for (j = 0; j < cells.length; j++) {
+                if (cells[j]) {
+                    if (cells[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                        rowContainsFilter = true;
+                        continue;
+                    }
+                }
+            }
+            if (!rowContainsFilter) {
+                rows[i].style.display = "none";
+            } else {
+                rows[i].style.display = "";
+            }
+        }
+    }
+
+    //  create  ajax request, for send request to nodejs  server side script
+    $(document).ready(function () {
+
+        load_data();
+
+        function load_data() {
+            $.ajax({
+                url: "http://localhost:3000/transaction_data/details",// nodejs express  application base url
+                method: "POST",//send data to server
+                data: { details: 'fetch' },// define which data   want  send to server
+                dataType: "JSON",//recevied data from server in json format 
+                success: function (data) { /*call back function */ 
+                    var html = '';
+
+                    if (data.data.length > 0) {
+                        for (var count = 0; count < data.data.length; count++) {
+                            html += `
+                        <tr>
+                            <td>`+ data.data[count].Bank_name + `</td>
+                            <td>`+ data.data[count].Customer_id + `</td>
+                            <td>`+ data.data[count].Name + `</td>
+                            <td>`+ data.data[count].Account_number + `</td>
+                            <td>`+ data.data[count].Contact_number + `</td>
+                            <td>`+ data.data[count].Amount + `</td>
+                            <td>`+ data.data[count].Date + `</td>
+                            <td>`+ data.data[count].Transaction_type + `</td>
+                            <td>`+ data.data[count].Location + `</td>
+                            <td><button type="button" class="btn btn-warning btn-sm edit" data-id="`+data.data[count].id+`">Edit</button></td>
+                            
+                        </tr>
+                        `;
+                        }
+                    }
+
+                    $('#transaction_data tbody').html(html);
+                }
+            });
+        }
+
+         $('#add_data').click(function(){
+
+        $('#dynamic_modal_title').text('Add Data');
+
+        $('#sample_form')[0].reset();
+
+        $('#details').val('Add');
+
+        $('#action_button').text('Add');
+
+        $('#action_modal').modal('show');
+
+    });
+
+
+
+     $('#sample_form').on('submit', function(event){
+
+    event.preventDefault();
+
+    $.ajax({
+        url:"http://localhost:3000/transaction_data/details",
+        method:"POST",
+        data:$('#sample_form').serialize(),
+        dataType:"JSON",
+        beforeSend:function(){
+            $('#action_button').attr('disabled', 'disabled');
+        },
+        success:function(data)
+        {
+            $('#action_button').attr('disabled', false);
+
+            $('#message').html('<div class="alert alert-success">'+data.message+'</div>');
+
+            $('#action_modal').modal('hide');
+
+            load_data();
+
+            setTimeout(function(){
+                $('#message').html('');
+            }, 5000);
+        }
+    });
+
+});
+
+    $(document).on('click', '.edit', function(){
+
+    var id = $(this).data('id');
+
+    $('#dynamic_modal_title').text('Edit Data');
+
+    $('#details').val('Edit');
+
+    $('#action_button').text('Edit');
+
+    $('#action_modal').modal('show');
+
+     $.ajax({
+        url:"http://localhost:3000/transaction_data/details",
+        method:"POST",
+        data:{id:id, details:'fetch_single'},
+        dataType:"JSON",
+        success:function(data)
+        {
+            $('#Bank_name').val(data.Bank_name);
+            $('#Customer_id').val(data.Customer_id);
+            $('#Name').val(data.Name);
+            $('#Account_number').val(data.Account_number);
+            $('#Contact_number').val(data.Contact_number);
+            $('#Amount').val(data.Amount);
+            $('#Date').val(data.Date);
+            $('#Transaction_type').val(data.Transaction_type);
+            $('#Location').val(data.Location);
+            $('#id').val(data.id);
+        }
+    });
+
+});
+
+
+    $(document).on('click', '.delete', function(){
+
+var id = $(this).data('id');
+
+if(confirm("Are you sure you want to delete this data?"))
+{
+    $.ajax({
+        url:"http://localhost:3000/transaction_data/details",
+        method:"POST",
+        data:{details:'delete', id:id},
+        dataType:"JSON",
+        success:function(data)
+        {
+            $('#message').html('<div class="alert alert-success">'+data.message+'</div>');
+            load_data();
+            setTimeout(function(){
+                $('#message').html('');
+            }, 5000);
+        }
+    });
+}
+
+});
+});
+
+  
+
+</script>

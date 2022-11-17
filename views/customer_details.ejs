@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link href="https://cdn.datatables.net/1.12.0/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.datatables.net/1.12.0/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.12.0/js/dataTables.bootstrap5.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
+        integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+        integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>
+    <title></title>
+    <style>
+        #map {
+            height: 300px;
+            width: 1300px;
+            text-align: center;
+            /* margin: 0 0 50px 110px; */
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .bg-light {
+            background-color: #da5538 !important;
+        }
+
+        .form-control {
+            width: 50%;
+            float: right;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">UNIQUE BANK</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" onclick="bankDetails()">BANK DETAILS </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="customerDetails()">CUSTOMER DETAILS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="transactioDetails()">TRANSACTION DETAILS</a>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <h1 class="mt-4 mb-4 text-center text-primary"><b>Unique Bank Customer Details </b></h1>
+
+        <span id="message"></span>
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-lg-6 col-sm-9 text-success h4"> Customer Details
+
+
+
+                    </div>
+
+
+                    <div class="col col-sm-6">
+                        <form class="form-inline my-2 my-lg-0">
+                            <input class="form-control mr-sm-2" type="search" id="myInput" onkeyup="search_f()"
+                                placeholder="Search" aria-label="Search">
+                            <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> -->
+                        </form>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered" id="customer_details"
+                            style="text-align: center;">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Customer_Name</th>
+                                    <th>Age</th>
+                                    <th>Account_Number</th>
+                                    <th>Account_Type </th>
+                                    <th>Contact_Number</th>
+                                    <th>Email</th>
+                                    <th>Address </th>
+                                    <!-- <th>Location</th> -->
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+</body>
+
+</html>
+
+<div class="modal" tabindex="-1" id="action_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" id="sample_form">
+                <div class="modal-header" id="dynamic_modal_title">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">ID</label>
+                        <input type="text" name="ID" id="ID" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Customer_Name</label>
+                        <input type="text" name="Customer_Name" id="Customer_Name" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Age</label>
+                        <input type="text" name="Age" id="Age" class="form-control" />
+
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Account_Number</label>
+                        <input type="nummber" name="Account_Number" id="Account_Number" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Account_Type </label>
+                        <input type="nummber" name="Account_Type " id="Account_Type " class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contact_Number </label>
+                        <input type="nummber" name="Contact_Number" id="Contact_Number" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email </label>
+                        <input type="nummber" name="Email " id="Email " class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Address </label>
+                        <input type="nummber" name="Address " id="Address " class="form-control" />
+                    </div>
+                    <!-- <div class="mb-3">
+                        <label class="form-label">Location </label>
+                        <input type="nummber" name="Location" id="Location" class="form-control" />
+                    </div> -->
+
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="ID" id="ID" />
+                    <input type="hidden" name="action" id="action" value="Add" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="action_button">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<h1 class="mt-4 mb-4 text-center text-primary"><b>Customer - Map View</b></h1>
+
+
+<div id="map"></div>
+<script>
+    var map = L.map('map').setView([13.0827, 80.2707], 4);
+
+    L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=etVqSaZAz1U98LvVh3Fj').addTo(map);
+
+</script>
+<script>
+    var siglemarker = L.marker([14.4426, 79.9865]).addTo(map);
+    var popup = siglemarker.bindPopup('ID:1 <br> Customer_Name :D RajaReddy <br> Age :22 <br> Account_Number :20383344366 <br> Contact_Number :7095322360 <br>Account_Type :Savings Account <br> Email :Raja26@gmail.com <br>  Address :#13-25/1 ,Narasa reddy colony, podalakuru,Nellore(D.t)<br>').openPopup();
+    popup.addTo(map)
+    var siglemarker = L.marker([13.6288, 79.4192]).addTo(map);
+    var popup = siglemarker.bindPopup('ID:1 <br> Customer_Name :G srinu <br> Age :18 <br> Account_Number :20383355358<br> Contact_Number :62814201092 <br>Account_Type :Current Account  <br> Email :srinu52@gmail.com <br>  Address :#78/12 ,Legacy Colony,Tirupati,Tirupati(D.t)<br>').openPopup();
+    popup.addTo(map)
+
+    // .openPopup();
+    // var marker=L.marker([13.6288, 79.4192]).addTo(map);
+    // L.marker([13.6288, 79.4192]).addTo(map)
+    // .bindPopup('siva.D <br>Amount:20000 <br> Date:5-11-22 <br> Time:11:03Am.')
+    // .openPopup();
+    // var marker=L.marker([17.6868,83.2185]).addTo(map);
+    // L.marker([17.6868,83.2185]).addTo(map)
+    // .bindPopup('siva.D <br>Amount:2058000 <br> Date:5-11-22 <br> Time:12:45Am.')
+    // .openPopup();
+    // var marker=L.marker([18.2949,83.8938]).addTo(map);
+    // L.marker([18.2949,83.8938]).addTo(map)
+    // .bindPopup('siva.D <br>Amount:50000 <br> Date:5-11-22 <br> Time:13:50pm.')
+    // .openPopup();
+    // var marker=L.marker([20.9320,77.7523]).addTo(map);
+    // L.marker([20.9320,77.7523]).addTo(map)
+    // .bindPopup('siva.D <br>Amount:10000 <br> Date:5-11-22 <br> Time:15:03pm.')
+    // .openPopup();
+
+    //   let bangaloreMap = L.marker([12.9716, 77.5946]).addTo(map);
+    // var popup = bangaloreMap.bindPopup('Test bangalore <br>Amount:20000 <br> Date:5-11-22 <br> Time:12:33Pm.').openPopup();
+    // popup.addTo(map)
+
+</script>
+
+
+<script>
+    function transactioDetails() {
+        window.open('/transaction_data', '_self')
+    }
+
+    function bankDetails() {
+        window.open('/bank_details', '_self')
+    }
+
+    function customerDetails() {
+        window.open('/customer_details', '_self')
+    }
+
+    function search_f() {
+        var input, filter, table, tr, td, i;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("customer_details");
+        var rows = table.getElementsByTagName("tr");
+        for (i = 0; i < rows.length; i++) {
+            var cells = rows[i].getElementsByTagName("td");
+            var j;
+            var rowContainsFilter = false;
+            for (j = 0; j < cells.length; j++) {
+                if (cells[j]) {
+                    if (cells[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                        rowContainsFilter = true;
+                        continue;
+                    }
+                }
+            }
+            if (!rowContainsFilter) {
+                rows[i].style.display = "none";
+            } else {
+                rows[i].style.display = "";
+            }
+        }
+    }
+
+
+//  create  ajax request, for send request to nodejs  server side script
+
+    $(document).ready(function () {
+
+        load_data();
+
+        function load_data() {
+            $.ajax({
+                url: "http://localhost:3000/customer_details/action",
+                method: "POST",
+                data: { action: 'fetch' },
+                dataType: "JSON",
+                success: function (data) {
+                    var html = '';
+
+                    if (data.data.length > 0) {
+                        for (var count = 0; count < data.data.length; count++) {
+                            html += `
+                        <tr>
+                            <td>`+ data.data[count].ID + `</td>
+                            <td>`+ data.data[count].Customer_Name + `</td>
+                            <td>`+ data.data[count].Age + `</td>
+                            <td>`+ data.data[count].Account_Number + `</td>
+                            <td>`+ data.data[count].Account_Type + `</td>
+                            <td>`+ data.data[count].Contact_Number + `</td>
+                            <td>`+ data.data[count].Email + `</td>
+                            <td>`+ data.data[count].Address + `</td>
+                            
+                        </tr>
+                        `;
+
+                        }
+                    }
+
+                    $('#customer_details tbody').html(html);
+                }
+            });
+        }
+
+        $('#add_data').click(function () {
+
+            $('#dynamic_modal_title').text('Add Data');
+
+            $('#sample_form')[0].reset();
+
+            $('#action').val('Add');
+
+            $('#action_button').text('Add');
+
+            $('#action_modal').modal('show');
+
+        });
+
+        $('#sample_form').on('submit', function (event) {
+
+            event.preventDefault();
+
+            $.ajax({
+                url: "http://localhost:3000/customer_details/action",
+                method: "POST",
+                data: $('#sample_form').serialize(),
+                dataType: "JSON",
+                beforeSend: function () {
+                    $('#action_button').attr('disabled', 'disabled');
+                },
+                success: function (data) {
+                    $('#action_button').attr('disabled', false);
+
+                    $('#message').html('<div class="alert alert-success">' + data.message + '</div>');
+
+                    $('#action_modal').modal('hide');
+
+                    load_data();
+
+                    setTimeout(function () {
+                        $('#message').html('');
+                    }, 5000);
+                }
+            });
+
+        });
+        $(document).on('click', '.edit', function () {
+
+            var id = $(this).data('id');
+
+            $('#dynamic_modal_title').text('Edit Data');
+
+            $('#action').val('Edit');
+
+            $('#action_button').text('Edit');
+
+            $('#action_modal').modal('show');
+
+            $.ajax({
+                url: "http://localhost:3000/customer_details/action",
+                method: "POST",
+                data: { id: id, action: 'fetch_single' },
+                dataType: "JSON",
+                success: function (data) {
+                    $('#id').val(data.ID);
+                    $('#Customer_Name').val(data.Customer_Name);
+                    $('#Age').val(data.Age);
+                    $('#Account_Number').val(data.Account_Number);
+                    $('#Account_Type ').val(data.Account_Type);
+                    $('#Contact_Number').val(data.Contact_Number);
+                    $('#Email').val(data.Email);
+                    $('#Address ').val(data.Address);
+                    // $('#Location').val(data.Location);
+
+                    $('#id').val(data.id);
+                }
+            });
+
+        });
+
+        $(document).on('click', '.delete', function () {
+
+            var id = $(this).data('id');
+
+            if (confirm("Are you sure you want to delete this data?")) {
+                $.ajax({
+                    url: "http://localhost:3000/customer_details/action",
+                    method: "POST",
+                    data: { action: 'delete', id: id },
+                    dataType: "JSON",
+                    success: function (data) {
+                        $('#message').html('<div class="alert alert-success">' + data.message + '</div>');
+                        load_data();
+                        setTimeout(function () {
+                            $('#message').html('');
+                        }, 5000);
+                    }
+                });
+            }
+
+        });
+
+    });
+
+</script>
